@@ -52,7 +52,9 @@ public class OrdenDeCompraDAO {
 
     public static ArrayList<OrdenDeCompra> selectFechaDiaMesA(String dia, String mes, String a) throws SQLException {
         ArrayList<OrdenDeCompra> arrOrdenDeCompra = new ArrayList<>();
-        PreparedStatement estatuto = VentanaMain.conex.getConnection().prepareStatement("SELECT * FROM dbo.ordenDeCompra WHERE (DAY(CAST(fechaGeneracion AS date))) = '" + dia + "' AND (MONTH(CAST(fechaGeneracion AS date))) = '" + mes + "' AND (YEAR(CAST(fechaGeneracion AS date))) = '" + a + "' order by (DAY(CAST(fechaGeneracion AS date))) asc");
+        PreparedStatement estatuto = VentanaMain.conex.getConnection().prepareStatement("SELECT a.numeroOC, a.proveedor, b.razonSocial, a.fechaGeneracion, a.observaciones, a.idSucursalCliente, a.descripcionFormaPago,"
+                + " a.preciofinal, a.descripcionFormaPago, a.precioFinal, a.direccionDestinoDespacho, a.generadoPor,a.estado from dbo.ordenDeCompra as a left join [ingresoAutomatico].[dbo].[proveedores] as b on a.proveedor = b.proveedor "
+                + " WHERE (DAY(CAST(fechaGeneracion AS date))) = '" + dia + "' AND (MONTH(CAST(fechaGeneracion AS date))) = '" + mes + "' AND (YEAR(CAST(fechaGeneracion AS date))) = '" + a + "' order by (DAY(CAST(fechaGeneracion AS date))) asc");
         try {
             ResultSet res = estatuto.executeQuery();
             try {
@@ -60,6 +62,7 @@ public class OrdenDeCompraDAO {
                     OrdenDeCompra ordenDeCompra = new OrdenDeCompra();
                     ordenDeCompra.setNumeroOC(res.getString("numeroOC"));
                     ordenDeCompra.setProveedor(res.getString("proveedor"));
+                    ordenDeCompra.setRazonSocial(res.getString("razonSocial"));
                     ordenDeCompra.setFechaGeneracion(res.getString("fechaGeneracion"));
                     ordenDeCompra.setObservaciones(res.getString("observaciones"));
                     ordenDeCompra.setIdSucursalCliente(res.getString("idSucursalCliente"));
@@ -177,7 +180,8 @@ public class OrdenDeCompraDAO {
 
     public static ArrayList<OrdenDeCompra> selectOrdenDeCompra(String fecha) throws SQLException {
         ArrayList<OrdenDeCompra> arrOrdenDeCompra = new ArrayList<>();
-        PreparedStatement estatuto = VentanaMain.conex.getConnection().prepareStatement("SELECT * FROM dbo.ordenDeCompra WHERE fechaGeneracion LIKE '%" + fecha + "%'");
+        PreparedStatement estatuto = VentanaMain.conex.getConnection().prepareStatement("SELECT a.numeroOC, a.proveedor, b.razonSocial, a.fechaGeneracion, a.observaciones, a.idSucursalCliente, a.descripcionFormaPago,"
+                + " a.preciofinal, a.descripcionFormaPago, a.precioFinal, a.direccionDestinoDespacho, a.generadoPor,a.estado from dbo.ordenDeCompra as a left join [ingresoAutomatico].[dbo].[proveedores] as b on a.proveedor = b.proveedor  WHERE fechaGeneracion LIKE '%" + fecha + "%'");
         try {
             ResultSet res = estatuto.executeQuery();
             try {
@@ -185,6 +189,7 @@ public class OrdenDeCompraDAO {
                     OrdenDeCompra ordenDeCompra = new OrdenDeCompra();
                     ordenDeCompra.setNumeroOC(res.getString("numeroOC"));
                     ordenDeCompra.setProveedor(res.getString("proveedor"));
+                    ordenDeCompra.setRazonSocial(res.getString("razonSocial"));
                     ordenDeCompra.setFechaGeneracion(res.getString("fechaGeneracion"));
                     ordenDeCompra.setObservaciones(res.getString("observaciones"));
                     ordenDeCompra.setIdSucursalCliente(res.getString("idSucursalCliente"));

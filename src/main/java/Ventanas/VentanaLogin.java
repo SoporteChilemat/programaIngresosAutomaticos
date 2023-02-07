@@ -55,9 +55,9 @@ public class VentanaLogin extends javax.swing.JDialog {
         setUndecorated(true);
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
-        jPanel1.setBorder(javax.swing.BorderFactory.createBevelBorder(0));
+        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel1.setFont(new java.awt.Font("Calibri", 1, 12)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Cascadia Code", 0, 12)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 102, 102));
         jLabel1.setText("Usuario:");
 
@@ -73,11 +73,10 @@ public class VentanaLogin extends javax.swing.JDialog {
             }
         });
         jTextField1.setBackground(new java.awt.Color(255, 255, 255));
-        jTextField1.setFont(new java.awt.Font("Calibri", 0, 12)); // NOI18N
-        jTextField1.setText("CAMILO");
+        jTextField1.setFont(new java.awt.Font("Cascadia Code", 0, 12)); // NOI18N
         jTextField1.setToolTipText("");
 
-        jButton1.setFont(new java.awt.Font("Calibri", 1, 12)); // NOI18N
+        jButton1.setFont(new java.awt.Font("Cascadia Code", 1, 12)); // NOI18N
         jButton1.setText("Entrar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -85,7 +84,7 @@ public class VentanaLogin extends javax.swing.JDialog {
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Calibri", 1, 12)); // NOI18N
+        jButton2.setFont(new java.awt.Font("Cascadia Code", 1, 12)); // NOI18N
         jButton2.setText("Cerrar");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -93,7 +92,7 @@ public class VentanaLogin extends javax.swing.JDialog {
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Calibri", 1, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Cascadia Code", 0, 12)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 102, 102));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Crear Usuario");
@@ -106,7 +105,7 @@ public class VentanaLogin extends javax.swing.JDialog {
             }
         });
 
-        jLabel5.setFont(new java.awt.Font("Calibri", 2, 12)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Cascadia Code", 0, 12)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(153, 153, 153));
         jLabel5.setText("Iniciar Secion");
 
@@ -117,7 +116,7 @@ public class VentanaLogin extends javax.swing.JDialog {
                 }
             }
         });
-        jPasswordField1.setText("15975357951");
+        jPasswordField1.setFont(new java.awt.Font("Cascadia Code", 0, 12)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -128,7 +127,7 @@ public class VentanaLogin extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4)
@@ -152,7 +151,7 @@ public class VentanaLogin extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(4, 4, 4)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE))
+                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(4, 4, 4)
                         .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))

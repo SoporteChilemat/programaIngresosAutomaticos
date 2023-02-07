@@ -47,7 +47,8 @@ public class PareoCodigoDAO {
     public static ArrayList<PareoCodigo> selectCodigo1(String codigoOrigianl, String proveedor) throws SQLException {
         ArrayList<PareoCodigo> arrPareoCodigo = new ArrayList<>();
         System.out.println("SELECT codigoOriginal, codigo1, proveedor FROM dbo.pareoCodigo2 WHERE pk = '" + proveedor + codigoOrigianl + "'");
-        try (PreparedStatement estatuto = conex.getConnection().prepareStatement("SELECT codigoOriginal, codigo1, proveedor, rtu1, operador1 FROM dbo.pareoCodigo2 WHERE pk = '" + proveedor + codigoOrigianl + "'"); ResultSet res = estatuto.executeQuery()) {
+        try (PreparedStatement estatuto = conex.getConnection().prepareStatement("SELECT codigoOriginal, codigo1, proveedor, rtu1, operador1 FROM dbo.pareoCodigo2 WHERE pk = '" + proveedor + codigoOrigianl + "' "
+                + "group by codigoOriginal, codigo1, proveedor, rtu1, operador1"); ResultSet res = estatuto.executeQuery()) {
             while (res.next()) {
                 PareoCodigo pareoCodigo = new PareoCodigo();
                 pareoCodigo.setCodigoOriginal(res.getString("codigoOriginal"));

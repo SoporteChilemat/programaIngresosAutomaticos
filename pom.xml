@@ -13,7 +13,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.mycompany.servidoringresoautomatico.ServidorIngresoAutomatico</mainClass>
+                            <mainClass>Ventanas.VentanaMain</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -74,6 +74,11 @@
             <artifactId>jna-platform</artifactId>
             <version>4.1.0</version>
             <type>jar</type>
+        </dependency>    
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
         </dependency>
         <dependency>
             <groupId>net.coderazzi</groupId>
@@ -103,6 +108,12 @@
             <groupId>unknown.binary</groupId>
             <artifactId>RSCalendar</artifactId>
             <version>SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.1.0</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
     <properties>

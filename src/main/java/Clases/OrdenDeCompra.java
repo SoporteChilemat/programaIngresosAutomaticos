@@ -3,24 +3,24 @@ package Clases;
 public class OrdenDeCompra {
 
     String numeroOC;
-
     String proveedor;
-
+    String razonSocial;
     String fechaGeneracion;
-
     String observaciones;
-
     String idSucursalCliente;
-
     String descripcionFormaPago;
-
     String precioTotal;
-
     String direccionDestinoDespacho;
-
     String generadoPor;
-
     String estado;
+
+    public String getRazonSocial() {
+        return razonSocial;
+    }
+
+    public void setRazonSocial(String razonSocial) {
+        this.razonSocial = razonSocial;
+    }
 
     public String getEstado() {
         return this.estado;

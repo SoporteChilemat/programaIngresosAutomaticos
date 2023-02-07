@@ -4,7 +4,12 @@
  */
 package Ventanas;
 
+import Clases.Excel;
+import Clases.Excel2;
 import Clases.OrdenDeCompra;
+import Clases.PareoCodigo;
+import DAO.Excel2DAO;
+import DAO.PareoCodigoDAO;
 import Logica.LogicaPrincipal;
 import connect.DBConnection;
 import java.io.File;
@@ -18,10 +23,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import org.apache.commons.io.FileUtils;
 
@@ -36,6 +37,8 @@ public class VentanaMain extends javax.swing.JFrame {
      */
     public VentanaMain() {
         initComponents();
+        jButton2.setVisible(false);
+        jButton3.setVisible(false);
     }
 
     public static void connection() throws IOException {
@@ -81,6 +84,8 @@ public class VentanaMain extends javax.swing.JFrame {
         rSDateChooser1 = new rojeru_san.componentes.RSDateChooser();
         rSDateChooser2 = new rojeru_san.componentes.RSDateChooser();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -100,18 +105,35 @@ public class VentanaMain extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        rSDateChooser1.setColorBackground(new java.awt.Color(102, 102, 102));
-        rSDateChooser1.setColorButtonHover(new java.awt.Color(102, 102, 102));
-        rSDateChooser1.setColorForeground(new java.awt.Color(102, 102, 102));
+        rSDateChooser1.setColorBackground(new java.awt.Color(6, 120, 50));
+        rSDateChooser1.setColorButtonHover(new java.awt.Color(6, 120, 50));
+        rSDateChooser1.setColorForeground(new java.awt.Color(6, 120, 50));
+        rSDateChooser1.setFont(new java.awt.Font("Cascadia Code", 0, 12)); // NOI18N
 
-        rSDateChooser2.setColorBackground(new java.awt.Color(102, 102, 102));
-        rSDateChooser2.setColorButtonHover(new java.awt.Color(102, 102, 102));
-        rSDateChooser2.setColorForeground(new java.awt.Color(102, 102, 102));
+        rSDateChooser2.setColorBackground(new java.awt.Color(6, 120, 50));
+        rSDateChooser2.setColorButtonHover(new java.awt.Color(6, 120, 50));
+        rSDateChooser2.setColorForeground(new java.awt.Color(6, 120, 50));
+        rSDateChooser2.setFont(new java.awt.Font("Cascadia Code", 0, 12)); // NOI18N
 
+        jButton1.setFont(new java.awt.Font("Cascadia Code", 0, 12)); // NOI18N
         jButton1.setText("Descargar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("jButton2");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("jButton3");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
             }
         });
 
@@ -125,15 +147,23 @@ public class VentanaMain extends javax.swing.JFrame {
                     .addComponent(rSDateChooser1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(rSDateChooser2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE))
-                .addContainerGap(750, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 669, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(rSDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(rSDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(rSDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(rSDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addContainerGap())
@@ -141,6 +171,7 @@ public class VentanaMain extends javax.swing.JFrame {
 
         jTabbedPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jLabel1.setText("jLabel1");
@@ -180,7 +211,7 @@ public class VentanaMain extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -271,6 +302,57 @@ public class VentanaMain extends javax.swing.JFrame {
         vi.setVisible(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        try {
+            ArrayList<Excel> transformarExcelaArray = LogicaPrincipal.transformarExcelaArray();
+            System.out.println(transformarExcelaArray.size());
+
+            transformarExcelaArray.stream().forEach((Excel excel) -> {
+                String rut = excel.getRut();
+                String codigoOriginal = excel.getCodigoOriginal();
+                String codigo = excel.getCodigo();
+
+                rut = rut.replace(".", "");
+                String[] split = rut.split("-");
+
+                System.out.println(split[0]);
+                System.out.println(codigoOriginal);
+                System.out.println(codigo);
+                System.out.println("-------------------------");
+
+                PareoCodigo pareoCodigo = new PareoCodigo();
+                pareoCodigo.setCodigoOriginal(codigoOriginal);
+                pareoCodigo.setProveedor(split[0]);
+                pareoCodigo.setCodigo1(codigo);
+                pareoCodigo.setRtu1("");
+                pareoCodigo.setOperador1("");
+
+                PareoCodigoDAO.insertPareoCodigoCodigo1(pareoCodigo);
+            });
+        } catch (IOException ex) {
+            Logger.getLogger(VentanaMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        try {
+            // TODO add your handling code here:
+            ArrayList<Excel2> transformarExcelaArray = LogicaPrincipal.transformarExcelaArray2();
+            transformarExcelaArray.stream().forEach((Excel2 excel2) -> {
+                try {
+                    Excel2DAO.registraExcel2(excel2);
+                } catch (IOException ex) {
+                    Logger.getLogger(VentanaMain.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(VentanaMain.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+        } catch (IOException ex) {
+            Logger.getLogger(VentanaMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -309,6 +391,8 @@ public class VentanaMain extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar2;
@@ -322,6 +406,7 @@ public class VentanaMain extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     public static String numeroOC;
     public static String proveedor;
+    public static String proveedor1;
     public static VentanaDetalle vd;
     public static VentanaMain ventanaPrincipal;
     public static DBConnection conex;
@@ -329,9 +414,4 @@ public class VentanaMain extends javax.swing.JFrame {
     public static JTabbedPane jTabbedPane3;
     public static VentanaLogin vl;
     public static JLabel jLabel3;
-    private JLabel jLabel2;
-    private JMenu jMenu1;
-    private JMenuBar jMenuBar1;
-    private JMenuItem jMenuItem1;
-    private JPanel jPanel3;
 }

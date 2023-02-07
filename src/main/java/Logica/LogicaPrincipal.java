@@ -14,6 +14,8 @@ import Clases.CustomRenderer5;
 import Clases.CustomRenderer7;
 import Clases.CustomRenderer8;
 import Clases.CustomRenderer9;
+import Clases.Excel;
+import Clases.Excel2;
 import Clases.Indices;
 import Clases.Ingresos;
 import Clases.OrdenDeCompra;
@@ -25,9 +27,17 @@ import DAO.OrdenDeCompraDAO;
 import DAO.PareoCodigoDAO;
 import DAO.ProductoOrdenDeCompraDAO;
 import Ventanas.VentanaDetalle;
+import static Ventanas.VentanaDetalle.jButton1;
 import Ventanas.VentanaIngresos;
 import Ventanas.VentanaLogin;
 import Ventanas.VentanaMain;
+import static Ventanas.VentanaMain.arrOrdenDeCompra;
+import static Ventanas.VentanaMain.jTabbedPane1;
+import static Ventanas.VentanaMain.jTabbedPane3;
+import static Ventanas.VentanaMain.numeroOC;
+import static Ventanas.VentanaMain.proveedor;
+import static Ventanas.VentanaMain.proveedor1;
+import static Ventanas.VentanaMain.ventanaPrincipal;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -37,16 +47,20 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JMenuItem;
@@ -66,8 +80,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import net.coderazzi.filters.gui.AutoChoices;
 import net.coderazzi.filters.gui.TableFilterHeader;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -295,13 +313,13 @@ public class LogicaPrincipal {
                     }
                     ArrayList<String> selectDistinctDiaMesA = OrdenDeCompraDAO.selectDistinctDiaMesA(mes, a);
                     if (!selectDistinctDiaMesA.isEmpty()) {
-                        VentanaMain.jTabbedPane3 = new JTabbedPane();
+                        jTabbedPane3 = new JTabbedPane();
                         for (int j = 0; j < selectDistinctDiaMesA.size(); j++) {
                             String dia = selectDistinctDiaMesA.get(j);
-                            VentanaMain.arrOrdenDeCompra = OrdenDeCompraDAO.selectFechaDiaMesA(dia, mes, a);
+                            arrOrdenDeCompra = OrdenDeCompraDAO.selectFechaDiaMesA(dia, mes, a);
                             cargaTablaPrincipal(j, dia + "/" + mes + "/" + a);
                         }
-                        jTabbedPane2.add(VentanaMain.jTabbedPane3);
+                        jTabbedPane2.add(jTabbedPane3);
                         jTabbedPane2.setTitleAt(cont, titleMes);
                         System.out.println(cont + " " + titleMes);
                         cont++;
@@ -310,8 +328,8 @@ public class LogicaPrincipal {
                     Logger.getLogger(VentanaMain.class.getName()).log(Level.SEVERE, (String) null, ex);
                 }
             }
-            VentanaMain.jTabbedPane1.add(jTabbedPane2);
-            VentanaMain.jTabbedPane1.setTitleAt(at.getAndIncrement(), a);
+            jTabbedPane1.add(jTabbedPane2);
+            jTabbedPane1.setTitleAt(at.getAndIncrement(), a);
         });
     }
 
@@ -353,36 +371,52 @@ public class LogicaPrincipal {
     }
 
     public static void cargaTablaPrincipal(int j, String fecha) {
-        final JTable jTable = new JTable();
+        JTable jTable = new JTable();
         new TableFilterHeader(jTable, AutoChoices.ENABLED);
         JScrollPane jScrollPane1 = new JScrollPane();
-        jTable.setModel(new DefaultTableModel(new Object[0][], (Object[]) new String[]{"Numero OC", "Proveedor", "Fecha Generacion", "Observaciones", "Direccion Despacho", "Generado Por", "Estado"}));
+        jTable.setModel(new DefaultTableModel(new Object[0][], (Object[]) new String[]{"Numero OC", "Proveedor", "Fecha Generacion", "Observaciones", "Direccion Despacho", "Generado Por", "Estado", "Proveedor"}));
         DefaultTableModel modelTabla1 = (DefaultTableModel) jTable.getModel();
-        Object[] fila = new Object[7];
-        VentanaMain.arrOrdenDeCompra.stream().forEach(ordenDeCompra -> {
+
+        Object[] fila = new Object[8];
+        arrOrdenDeCompra.stream().forEach(ordenDeCompra -> {
             fila[0] = ordenDeCompra.getNumeroOC();
-            fila[1] = ordenDeCompra.getProveedor();
+            String razonSocial = ordenDeCompra.getRazonSocial();
+            if (razonSocial == null || razonSocial.equals("")) {
+                fila[1] = ordenDeCompra.getProveedor();
+            } else {
+                fila[1] = ordenDeCompra.getRazonSocial();
+            }
             fila[2] = ordenDeCompra.getFechaGeneracion();
             fila[3] = ordenDeCompra.getObservaciones();
             fila[4] = ordenDeCompra.getDireccionDestinoDespacho();
             fila[5] = ordenDeCompra.getGeneradoPor();
             fila[6] = ordenDeCompra.getEstado();
+            fila[7] = ordenDeCompra.getProveedor();
             modelTabla1.addRow(fila);
         });
+
         ((DefaultTableCellRenderer) jTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(0);
         resizeColumnWidth(jTable);
+
         jTable.setRowHeight(35);
         jTable.setShowHorizontalLines(true);
         jTable.setShowVerticalLines(true);
+
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
         int columnCount = jTable.getColumnCount();
         for (int i = 0; i < columnCount; i++) {
             jTable.getColumnModel().getColumn(i).setCellRenderer(renderer);
         }
         renderer.setHorizontalAlignment(0);
+
         int rowCount = jTable.getRowCount();
         System.out.println("rowCount " + rowCount);
-        final JPopupMenu popupMenu = new JPopupMenu();
+
+        jTable.getColumnModel().getColumn(7).setMinWidth(0);
+        jTable.getColumnModel().getColumn(7).setMaxWidth(0);
+        jTable.getColumnModel().getColumn(7).setWidth(0);
+
+        JPopupMenu popupMenu = new JPopupMenu();
         JMenuItem menu = new JMenuItem("Abrir OC");
         popupMenu.addPopupMenuListener(new PopupMenuListener() {
             public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
@@ -408,15 +442,17 @@ public class LogicaPrincipal {
             public void actionPerformed(ActionEvent e) {
                 try {
                     int selectedRow = jTable.getSelectedRow();
-                    VentanaMain.numeroOC = jTable.getValueAt(selectedRow, 0).toString();
-                    VentanaMain.proveedor = jTable.getValueAt(selectedRow, 1).toString();
-                    System.out.println("numeroOC " + VentanaMain.numeroOC);
-                    LogicaPrincipal.vd = new VentanaDetalle((Frame) VentanaMain.ventanaPrincipal, true);
-                    LogicaPrincipal.vd.setLocationRelativeTo((Component) VentanaMain.ventanaPrincipal);
-                    VentanaDetalle.jLabel2.setText(VentanaMain.numeroOC);
-                    VentanaDetalle.jLabel4.setText(VentanaMain.proveedor);
-                    VentanaDetalle.arrPoductoOrdenDeCompra = ProductoOrdenDeCompraDAO.selectproductoOrdenDeCompraWhere(VentanaMain.numeroOC, VentanaMain.proveedor);
-                    VentanaDetalle.arrProductosIngresados = IngresosDAO.selectProductoIngresado(VentanaMain.numeroOC);
+                    numeroOC = jTable.getValueAt(selectedRow, 0).toString();
+                    proveedor = jTable.getValueAt(selectedRow, 7).toString();
+                    proveedor1 = jTable.getValueAt(selectedRow, 1).toString();
+                    System.out.println("numeroOC " + numeroOC);
+                    LogicaPrincipal.vd = new VentanaDetalle((Frame) ventanaPrincipal, true);
+                    LogicaPrincipal.vd.setLocationRelativeTo((Component) ventanaPrincipal);
+                    VentanaDetalle.jLabel2.setText(numeroOC);
+                    VentanaDetalle.jLabel4.setText(proveedor);
+                    VentanaDetalle.jLabel5.setText(proveedor1);
+                    VentanaDetalle.arrPoductoOrdenDeCompra = ProductoOrdenDeCompraDAO.selectproductoOrdenDeCompraWhere(numeroOC, proveedor);
+                    VentanaDetalle.arrProductosIngresados = IngresosDAO.selectProductoIngresado(numeroOC);
                     System.out.println("arrProductosIngresados.size() " + VentanaDetalle.arrProductosIngresados.size());
                     LogicaPrincipal.cargaTablaDetalle();
                     LogicaPrincipal.vd.setVisible(true);
@@ -428,8 +464,8 @@ public class LogicaPrincipal {
         popupMenu.add(menu);
         jTable.setComponentPopupMenu(popupMenu);
         jScrollPane1.setViewportView(jTable);
-        VentanaMain.jTabbedPane3.add(jScrollPane1);
-        VentanaMain.jTabbedPane3.setTitleAt(j, fecha);
+        jTabbedPane3.add(jScrollPane1);
+        jTabbedPane3.setTitleAt(j, fecha);
     }
 
     public static void cargaTablaDetalle() {
@@ -673,7 +709,7 @@ public class LogicaPrincipal {
         String baseURL = "https://asociado.chilemat.cl/";
         String rut = "17568448-4";
         String password = "qu4tfx";
-        VentanaMain.jButton1.setText("Cargando Chilemat");
+        jButton1.setText("Cargando Chilemat");
         driver.get(baseURL);
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"txtRut\"]")));
@@ -682,7 +718,7 @@ public class LogicaPrincipal {
         driver.findElement(By.xpath("//*[@id=\"objButton_loginUsuario\"]")).click();
         driver.get("https://asociado.chilemat.cl/clientes/michilemat/informeDeOrdenes.aspx?intIdTipoNegocio=1");
 
-        VentanaMain.jButton1.setText("Pegando Fechas");
+        jButton1.setText("Pegando Fechas");
         System.out.println("fechaDesde " + fechaDesde);
         System.out.println("fechaHasta " + fechaHasta);
 
@@ -783,7 +819,7 @@ public class LogicaPrincipal {
                                 leerProductoOC(nList, numeroOC);
                             }
                         }
-                        VentanaMain.jButton1.setText("Descargando: " + num);
+                        jButton1.setText("Descargando: " + num);
                         cont++;
                         System.out.println("cont " + cont);
                         if (cont == 52) {
@@ -831,7 +867,7 @@ public class LogicaPrincipal {
         String rut = "17568448-4";
         String password = "qu4tfx";
 
-        VentanaMain.jButton1.setText("Cargando Chilemat");
+        jButton1.setText("Cargando Chilemat");
 
         driver.get(baseURL);
 
@@ -841,7 +877,7 @@ public class LogicaPrincipal {
         driver.findElement(By.xpath("//*[@id=\"objButton_loginUsuario\"]")).click();
         driver.get("https://asociado.chilemat.cl/clientes/michilemat/informeDeOrdenes.aspx?intIdTipoNegocio=-1");
 
-        VentanaMain.jButton1.setText("Pegando Fechas");
+        jButton1.setText("Pegando Fechas");
         System.out.println("fechaDesde " + fechaDesde);
         System.out.println("fechaHasta " + fechaHasta);
 
@@ -1006,5 +1042,169 @@ public class LogicaPrincipal {
             }
             columnModel.getColumn(column).setPreferredWidth(width);
         }
+    }
+
+    public static ArrayList<Excel> transformarExcelaArray() throws FileNotFoundException, IOException {
+        InputStream ExcelFileToRead = new FileInputStream(new File(System.getProperty("user.dir") + "\\ERP_SAF2_PRODUCTOS_INGRESADOS.xlsx"));
+
+        XSSFWorkbook wb = new XSSFWorkbook(ExcelFileToRead);
+        XSSFSheet sheet = wb.getSheetAt(0);
+        Row row;
+        Cell cell;
+        Iterator rows = sheet.rowIterator();
+        rows.next();
+
+        ArrayList<Excel> arrExcel = new ArrayList<>();
+
+        while (rows.hasNext()) {
+            Excel excel = new Excel();
+            int cont = 0;
+            row = (Row) rows.next();
+            Iterator cells = row.cellIterator();
+            while (cells.hasNext()) {
+//                System.out.println(cont);
+                cell = (Cell) cells.next();
+                switch (cont) {
+                    case 3: {
+                        if (cell.getCellType() == CellType.FORMULA) {
+                            if (cell.getCachedFormulaResultType() == CellType.NUMERIC) {
+                                excel.setRut(String.valueOf(cell.getNumericCellValue()));
+//                                System.out.println("1 " + String.valueOf(cell.getNumericCellValue()));
+                            } else if (cell.getCachedFormulaResultType() == CellType.STRING) {
+                                excel.setRut(cell.getStringCellValue());
+//                                System.out.println("2 " + cell.getStringCellValue());
+                            }
+                        } else {
+                            try {
+                                excel.setRut(cell.getStringCellValue());
+//                                System.out.println("3 " + cell.getStringCellValue());
+                            } catch (Exception e) {
+                                excel.setRut(String.valueOf(cell.getNumericCellValue()));
+//                                System.out.println("4 " + String.valueOf(cell.getNumericCellValue()));
+                            }
+                        }
+                    }
+                    case 6: {
+                        if (cell.getCellType() == CellType.FORMULA) {
+                            if (cell.getCachedFormulaResultType() == CellType.NUMERIC) {
+                                excel.setCodigoOriginal(String.valueOf(cell.getNumericCellValue()));
+//                                System.out.println("1 " + String.valueOf(cell.getNumericCellValue()));
+                            } else if (cell.getCachedFormulaResultType() == CellType.STRING) {
+                                excel.setCodigoOriginal(cell.getStringCellValue());
+//                                System.out.println("2 " + cell.getStringCellValue());
+                            }
+                        } else {
+                            try {
+                                excel.setCodigoOriginal(cell.getStringCellValue());
+//                                System.out.println("3 " + cell.getStringCellValue());
+                            } catch (Exception e) {
+                                excel.setCodigoOriginal(String.valueOf(cell.getNumericCellValue()));
+//                                System.out.println("4 " + String.valueOf(cell.getNumericCellValue()));
+                            }
+                        }
+                    }
+                    case 14: {
+                        if (cell.getCellType() == CellType.FORMULA) {
+                            if (cell.getCachedFormulaResultType() == CellType.NUMERIC) {
+                                excel.setCodigo(String.valueOf(cell.getNumericCellValue()));
+//                                System.out.println("1 " + String.valueOf(cell.getNumericCellValue()));
+                            } else if (cell.getCachedFormulaResultType() == CellType.STRING) {
+                                excel.setCodigo(cell.getStringCellValue());
+//                                System.out.println("2 " + cell.getStringCellValue());
+                            }
+                        } else {
+                            try {
+                                excel.setCodigo(cell.getStringCellValue());
+//                                System.out.println("3 " + cell.getStringCellValue());
+                            } catch (Exception e) {
+                                String valueOf = String.valueOf(cell.getNumericCellValue());
+                                excel.setCodigo(valueOf);
+//                                System.out.println("4 " + String.valueOf(cell.getNumericCellValue()));
+                            }
+                        }
+                    }
+                }
+                cont++;
+            }
+            arrExcel.add(excel);
+        }
+
+        ExcelFileToRead.close();
+
+        return arrExcel;
+    }
+
+    public static ArrayList<Excel2> transformarExcelaArray2() throws FileNotFoundException, IOException {
+        InputStream ExcelFileToRead = new FileInputStream(new File(System.getProperty("user.dir") + "\\Libro1.xlsx"));
+
+        XSSFWorkbook wb = new XSSFWorkbook(ExcelFileToRead);
+        XSSFSheet sheet = wb.getSheetAt(0);
+        Row row;
+        Cell cell;
+        Iterator rows = sheet.rowIterator();
+        rows.next();
+
+        ArrayList<Excel2> arrExcel2 = new ArrayList<>();
+
+        while (rows.hasNext()) {
+            Excel2 excel2 = new Excel2();
+            int cont = 0;
+            row = (Row) rows.next();
+            Iterator cells = row.cellIterator();
+            while (cells.hasNext()) {
+//                System.out.println(cont);
+                cell = (Cell) cells.next();
+                switch (cont) {
+                    case 0: {
+                        if (cell.getCellType() == CellType.FORMULA) {
+                            if (cell.getCachedFormulaResultType() == CellType.NUMERIC) {
+                                excel2.setRut(String.valueOf(cell.getNumericCellValue()));
+                                System.out.println("1 " + String.valueOf(cell.getNumericCellValue()));
+                            } else if (cell.getCachedFormulaResultType() == CellType.STRING) {
+                                excel2.setRut(cell.getStringCellValue());
+                                System.out.println("2 " + cell.getStringCellValue());
+                            }
+                        } else {
+                            try {
+                                excel2.setRut(cell.getStringCellValue());
+                                System.out.println("3 " + cell.getStringCellValue());
+                            } catch (Exception e) {
+                                double numericCellValue = cell.getNumericCellValue();
+                                DecimalFormat df = new DecimalFormat("#");
+                                df.setMaximumFractionDigits(8);
+                                System.out.println(df.format(numericCellValue));
+                                excel2.setRut(df.format(numericCellValue));
+                                System.out.println("4 " + String.valueOf(cell.getNumericCellValue()));
+                            }
+                        }
+                    }
+                    case 1: {
+                        if (cell.getCellType() == CellType.FORMULA) {
+                            if (cell.getCachedFormulaResultType() == CellType.NUMERIC) {
+                                excel2.setRazonSocial(String.valueOf(cell.getNumericCellValue()));
+//                                System.out.println("1 " + String.valueOf(cell.getNumericCellValue()));
+                            } else if (cell.getCachedFormulaResultType() == CellType.STRING) {
+                                excel2.setRazonSocial(cell.getStringCellValue());
+//                                System.out.println("2 " + cell.getStringCellValue());
+                            }
+                        } else {
+                            try {
+                                excel2.setRazonSocial(cell.getStringCellValue());
+//                                System.out.println("3 " + cell.getStringCellValue());
+                            } catch (Exception e) {
+                                excel2.setRazonSocial(String.valueOf(cell.getNumericCellValue()));
+//                                System.out.println("4 " + String.valueOf(cell.getNumericCellValue()));
+                            }
+                        }
+                    }
+                }
+                cont++;
+            }
+            arrExcel2.add(excel2);
+        }
+
+        ExcelFileToRead.close();
+
+        return arrExcel2;
     }
 }
